@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, BadRequestException} from '@nestjs/common';
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import * as process from "node:process";
 
 @Controller('categorias')
 export class CategoriasController {
@@ -19,7 +18,7 @@ export class CategoriasController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseIntPipe({exceptionFactory: () => new BadRequestException("Id no valido")})) id: string) {
     return this.categoriasService.findOne(+id);
   }
 
