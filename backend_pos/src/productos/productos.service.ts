@@ -29,12 +29,14 @@ export class ProductosService {
         return this.productoRepository.save(productoToSave);
     }
 
-    async findAll() {
+    async findAll(idCategory?: number) {
+        const where = idCategory ? {categoria: {id: idCategory}} : {};
         const [data, total] = await this.productoRepository.findAndCount({
             relations: ["categoria"],
             order: {
                 id: "ASC"
-            }
+            },
+            where
         });
         return {
             data,
