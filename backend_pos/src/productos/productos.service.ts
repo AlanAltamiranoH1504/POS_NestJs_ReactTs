@@ -29,19 +29,48 @@ export class ProductosService {
         return this.productoRepository.save(productoToSave);
     }
 
-    findAll() {
-        return `This action returns all productos`;
+    async findAll() {
+        const [data, total] = await this.productoRepository.findAndCount({
+            relations: ["categoria"],
+            order: {
+                id: "ASC"
+            }
+        });
+        return {
+            data,
+            total
+        }
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} producto`;
+    async findOne(id: number) {
+        const producto = await this.productoRepository.findOne({where: {id}, relations: ["categoria"]});
+        if (!producto) {
+            throw new HttpException("Producto no encontrado", HttpStatus.NOT_FOUND);
+        }
+        return producto;
     }
 
-    update(id: number, updateProductoDto: UpdateProductoDto) {
-        return `This action updates a #${id} producto`;
+    async update(id: number, updateProductoDto: UpdateProductoDto) {
+        const productoToUpdate = await this.findOne(id);
+        const categoriaToSet = await this.categoriaRepository.findOne({where: {id: updateProductoDto.categoriaId}});
+        if (!categoriaToSet) {
+            throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        productoToUpdate.nombre = updateProductoDto.nombre;
+        productoToUpdate.precio = updateProductoDto.precio;
+        productoToUpdate.inventario = updateProductoDto.inventario;
+        productoToUpdate.categoria = categoriaToSet;
+        await this.productoRepository.save(productoToUpdate);
+        return productoToUpdate;
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} producto`;
+    async remove(id: number) {
+        const producto_to_delete = await this.productoRepository.findOne({where: {id}});
+        if (!producto_to_delete) {
+            throw new HttpException("Producto no encontrado", HttpStatus.NOT_FOUND);
+        }
+        await this.productoRepository.delete(id);
+        return "Producto eliminado";
     }
 }

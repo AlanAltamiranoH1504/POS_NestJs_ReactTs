@@ -18,6 +18,6 @@ export class Producto {
     @Column({type: "int", nullable: false, default: 1})
     inventario: number;
 
-    @ManyToOne(() => Categoria, categoria => categoria.productos, {onDelete: "CASCADE"})
+    @ManyToOne(() => Categoria, categoria => categoria.productos, {cascade: true})
     categoria: Categoria;
 }

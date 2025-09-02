@@ -3,6 +3,7 @@ import {ProductosService} from './productos.service';
 import {CreateProductoDto} from './dto/create-producto.dto';
 import {UpdateProductoDto} from './dto/update-producto.dto';
 import {CategoriasService} from "../categorias/categorias.service";
+import {IdValidationPipe} from "../common/pipes/id-validation/id-validation.pipe";
 
 @Controller('productos')
 export class ProductosController {
@@ -11,7 +12,6 @@ export class ProductosController {
 
     @Post()
     create(@Body() createProductoDto: CreateProductoDto) {
-        //Busqueda de categoria
         return this.productosService.create(createProductoDto);
     }
 
@@ -21,17 +21,17 @@ export class ProductosController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', IdValidationPipe) id: string) {
         return this.productosService.findOne(+id);
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateProductoDto: UpdateProductoDto) {
+    update(@Param('id', IdValidationPipe) id: string, @Body() updateProductoDto: UpdateProductoDto) {
         return this.productosService.update(+id, updateProductoDto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(@Param('id', IdValidationPipe) id: string) {
         return this.productosService.remove(+id);
     }
 }
