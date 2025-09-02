@@ -5,6 +5,7 @@
     import { AppService } from './app.service';
     import { CategoriasModule } from './categorias/categorias.module';
     import {typeOrmConfig} from "./config/typeorm.config";
+import { ProductosModule } from './productos/productos.module';
 
     @Module({
       imports: [
@@ -15,7 +16,8 @@
             useFactory: typeOrmConfig,
               inject: [ConfigService]
           }),
-          CategoriasModule],
+          CategoriasModule,
+          ProductosModule],
       controllers: [AppController],
       providers: [AppService],
     })

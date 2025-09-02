@@ -31,6 +31,6 @@ export class CategoriasController {
 
     @Delete(':id')
     remove(@Param('id', IdValidationPipe) id: string) {
-        return this.categoriasService.remove(+id);
+        this.categoriasService.remove(+id);
     }
 }
