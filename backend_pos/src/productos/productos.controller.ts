@@ -18,7 +18,7 @@ export class ProductosController {
 
     @Get()
     findAll(@Query() query: GetProductosQueryDTO) {
-        return this.productosService.findAll(query.categoria_id);
+        return this.productosService.findAll(query.categoria_id, query.take, query.page);
     }
 
     @Get(':id')

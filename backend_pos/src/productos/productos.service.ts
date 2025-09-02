@@ -5,6 +5,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Producto} from "./entities/producto.entity";
 import {Repository} from "typeorm";
 import {Categoria} from "../categorias/entities/categoria.entity";
+import {take} from "rxjs";
 
 @Injectable()
 export class ProductosService {
@@ -29,18 +30,22 @@ export class ProductosService {
         return this.productoRepository.save(productoToSave);
     }
 
-    async findAll(idCategory?: number) {
+    async findAll(idCategory?: number, take?: number, page?: number) {
         const where = idCategory ? {categoria: {id: idCategory}} : {};
+        const takeConsult = take ? take : 5;
+        const pageDefault = page ? page : 1;
         const [data, total] = await this.productoRepository.findAndCount({
             relations: ["categoria"],
             order: {
                 id: "ASC"
             },
+            skip: (pageDefault - 1) * takeConsult,
+            take: takeConsult,
             where
         });
         return {
             data,
-            total
+            total,
         }
     }
 
