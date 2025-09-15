@@ -2,9 +2,10 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {CreateTransactionDto} from './dto/create-transaction.dto';
 import {UpdateTransactionDto} from './dto/update-transaction.dto';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {Repository, FindManyOptions} from "typeorm";
 import {ContenidoTransacciones, Transaction} from "./entities/transaction.entity";
 import {Producto} from "../productos/entities/producto.entity";
+import {isValid, parseISO} from 'date-fns';
 
 @Injectable()
 export class TransactionsService {
@@ -47,23 +48,68 @@ export class TransactionsService {
                 });
                 await manager.save(nuevo_contenido); //Fin de transaccion
             }
-            return "Venta almacenada";
+            return {
+                status: true,
+                message: "Transacción realizada correctamente"
+            }
         });
     }
 
-    findAll() {
-        return `This action returns all transactions`;
+    findAll(formatDate?: string) {
+        let options: FindManyOptions = {
+            relations: ["contenido", "contenido.producto"],
+        }
+        if (formatDate) {
+            const date = parseISO(formatDate);
+            if (!isValid(date)) {
+                throw new HttpException("Fecha no valida", HttpStatus.BAD_REQUEST);
+            }
+            options.where = {
+                fechaTransaccion: date
+            }
+        }
+        return this.transactionRepository.find(options);
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} transaction`;
+    async findOne(id: number) {
+        const transaction_to_found = await this.transactionRepository.findOne({
+            where: {id: id},
+            relations: ["contenido", "contenido.producto"]
+        });
+        if (!transaction_to_found) {
+            throw new HttpException("Transacción no encontrada", HttpStatus.NOT_FOUND)
+        }
+        return transaction_to_found;
     }
 
     update(id: number, updateTransactionDto: UpdateTransactionDto) {
         return `This action updates a #${id} transaction`;
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} transaction`;
+    async remove(id: number) {
+        return await this.transactionRepository.manager.transaction(async (manager) => {
+            const transaction_to_delete = await manager.findOne(Transaction, {
+                where: {id: id},
+                relations: ["contenido", "contenido.producto"]
+            });
+            if (!transaction_to_delete) {
+                throw new HttpException(`Transaccion con id ${id} no encontrada`, HttpStatus.NOT_FOUND);
+            }
+            for (const contenido of transaction_to_delete.contenido) {
+                const producto = await manager.findOne(Producto, {
+                    where: {id: contenido.producto.id}
+                });
+                if (!producto) {
+                    throw new HttpException("Producto no encontrado", HttpStatus.NOT_FOUND);
+                }
+                producto.inventario = producto.inventario + 1;
+                await manager.save(producto);
+            }
+            await manager.delete(Transaction, transaction_to_delete.id);
+            return {
+                status: true,
+                message: "Transacción eliminada correctamente",
+            }
+        });
     }
 }

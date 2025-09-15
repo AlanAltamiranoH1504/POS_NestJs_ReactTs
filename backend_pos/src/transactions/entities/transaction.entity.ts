@@ -9,7 +9,7 @@ export class Transaction {
     @Column({type: "decimal"})
     total: number;
 
-    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)"})
+    @Column({type: "date", default: () => "CURRENT_TIMESTAMP(6)"})
     fechaTransaccion: Date;
 
     @OneToMany(() => ContenidoTransacciones, (transaccion) => transaccion.transaction)

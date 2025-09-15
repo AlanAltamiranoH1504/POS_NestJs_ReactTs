@@ -2,7 +2,6 @@ import {Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpSt
 import {ProductosService} from './productos.service';
 import {CreateProductoDto} from './dto/create-producto.dto';
 import {UpdateProductoDto} from './dto/update-producto.dto';
-import {CategoriasService} from "../categorias/categorias.service";
 import {IdValidationPipe} from "../common/pipes/id-validation/id-validation.pipe";
 import {GetProductosQueryDTO} from "./dto/get-producto.dto";
 
