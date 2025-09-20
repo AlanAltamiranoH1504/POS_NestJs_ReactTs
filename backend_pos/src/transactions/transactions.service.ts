@@ -20,8 +20,9 @@ export class TransactionsService {
         // Inicio de transaccion
         return await this.transactionRepository.manager.transaction(async (manager) => {
             const total = createTransactionDto.contenido.reduce((acumulador, cote) => {
-                return acumulador + cote.precio;
+                return acumulador + (cote.precio) * cote.cantidad;
             }, 0);
+
             if (total !== createTransactionDto.total) {
                 throw new HttpException("Monto total no correcto", HttpStatus.BAD_REQUEST);
             }
@@ -102,7 +103,7 @@ export class TransactionsService {
                 if (!producto) {
                     throw new HttpException("Producto no encontrado", HttpStatus.NOT_FOUND);
                 }
-                producto.inventario = producto.inventario + 1;
+                producto.inventario = contenido.cantidad;
                 await manager.save(producto);
             }
             await manager.delete(Transaction, transaction_to_delete.id);
