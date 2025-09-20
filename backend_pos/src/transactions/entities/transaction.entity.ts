@@ -9,6 +9,12 @@ export class Transaction {
     @Column({type: "decimal"})
     total: number;
 
+    @Column({type: "varchar", length: 10, default: null})
+    cupon: string;
+
+    @Column({type: "decimal", default: null})
+    descuento: number;
+
     @Column({type: "date", default: () => "CURRENT_TIMESTAMP(6)"})
     fechaTransaccion: Date;
 

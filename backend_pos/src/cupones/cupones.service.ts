@@ -4,6 +4,8 @@ import {UpdateCuponeDto} from './dto/update-cupone.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Cupone} from "./entities/cupone.entity";
 import {Repository} from "typeorm";
+import {AplicarCuponDtoTs} from "./dto/aplicar-cupon.dto.ts";
+import {endOfDay, isAfter} from "date-fns";
 
 @Injectable()
 export class CuponesService {
@@ -83,7 +85,7 @@ export class CuponesService {
         }
     }
 
-   async remove(id: number) {
+    async remove(id: number) {
         const cuponToDelete = await this.cuponesRepository.findOne({
             where: {
                 id: id,
@@ -98,6 +100,29 @@ export class CuponesService {
         return {
             status: true,
             message: "Cupon eliminado correctamente"
+        }
+    }
+
+    async aplicar_cupon(aplicarCuponDto: AplicarCuponDtoTs) {
+        //Busqueda de cupon
+        const cuponToAply = await this.cuponesRepository.findOne({
+            where: {
+                slug: aplicarCuponDto.slug,
+                status: true
+            }
+        });
+        if (!cuponToAply) {
+            throw new HttpException("Cupón no encontrado o no disponible", HttpStatus.NOT_FOUND);
+        }
+
+        //Validacion de expiracion del cupon
+        const fechaActual = new Date();
+        const fechaExpiracion = endOfDay(cuponToAply.fecha_expiracion);
+        if (isAfter(fechaActual, fechaExpiracion)) {
+            throw new HttpException("Cupón expirado", HttpStatus.CONFLICT);
+        }
+        return {
+            cupon: cuponToAply,
         }
     }
 }

@@ -3,7 +3,7 @@ import {
     IsArray,
     IsInt,
     IsNotEmpty,
-    IsNumber,
+    IsNumber, IsOctal, IsOptional, IsString, MaxLength,
     ValidateNested
 } from "class-validator";
 import {Type} from "class-transformer";
@@ -26,6 +26,11 @@ export class CreateTransactionDto {
     @IsNotEmpty({message: 'El Total no puede ir vacio'})
     @IsNumber({}, {message: 'Cantidad no válida'})
     total: number
+
+    @IsString({message: "El slug del cupon debe ser una cadena de texto"})
+    @IsOptional()
+    @MaxLength(10, {message: "La longitud del slug no puede ser mayor a 10 caracteres"})
+    cupon: string;
 
     @IsArray()
     @ArrayNotEmpty({message: "Los cotenidos no pueden estar vacios"})

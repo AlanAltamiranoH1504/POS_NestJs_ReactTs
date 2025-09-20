@@ -5,14 +5,16 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository, FindManyOptions} from "typeorm";
 import {ContenidoTransacciones, Transaction} from "./entities/transaction.entity";
 import {Producto} from "../productos/entities/producto.entity";
-import {isValid, parseISO} from 'date-fns';
+import {endOfDay, isAfter, isValid, parseISO} from 'date-fns';
+import {Cupone} from "../cupones/entities/cupone.entity";
 
 @Injectable()
 export class TransactionsService {
     constructor(
         @InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
         @InjectRepository(ContenidoTransacciones) private readonly contenidoTransacccionesRepository: Repository<ContenidoTransacciones>,
-        @InjectRepository(Producto) private readonly productoRepository: Repository<Producto>
+        @InjectRepository(Producto) private readonly productoRepository: Repository<Producto>,
+        @InjectRepository(Cupone) private readonly cuponesResitory: Repository<Cupone>
     ) {
     }
 
@@ -22,13 +24,36 @@ export class TransactionsService {
             const total = createTransactionDto.contenido.reduce((acumulador, cote) => {
                 return acumulador + (cote.precio) * cote.cantidad;
             }, 0);
+            let descuento = 0;
+
+            //Aplicacion de cupon
+            if (createTransactionDto.cupon) {
+                const cuponToAply = await this.cuponesResitory.findOne({
+                    where: {
+                        slug: createTransactionDto.cupon,
+                        status: true
+                    }
+                });
+                if (!cuponToAply) {
+                    throw new HttpException("Cupón no encontrado", HttpStatus.NOT_FOUND);
+                }
+
+                const fechaActual = new Date();
+                const fechaExpiracionCupon = endOfDay(cuponToAply.fecha_expiracion);
+                if (isAfter(fechaActual, fechaExpiracionCupon)) {
+                    throw new HttpException("Cupón expirado", HttpStatus.CONFLICT);
+                }
+                descuento = total * (cuponToAply.porcentaje / 100);
+            }
 
             if (total !== createTransactionDto.total) {
                 throw new HttpException("Monto total no correcto", HttpStatus.BAD_REQUEST);
             }
 
             const transaccion = new Transaction();
-            transaccion.total = createTransactionDto.total;
+            transaccion.total = total - descuento;
+            transaccion.cupon = createTransactionDto.cupon;
+            transaccion.descuento = descuento
             await manager.save(transaccion);
 
             for (const contenido of createTransactionDto.contenido) {
