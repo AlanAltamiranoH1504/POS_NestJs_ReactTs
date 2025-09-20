@@ -4,7 +4,7 @@ import {ArgumentMetadata, BadRequestException, Injectable, ParseIntPipe} from '@
 export class IdValidationPipe extends ParseIntPipe {
     constructor() {
         super({
-            exceptionFactory: () => new BadRequestException("ID no valido.")
+            exceptionFactory: () => new BadRequestException("ID no valido para busqueda.")
         });
     }
 }
