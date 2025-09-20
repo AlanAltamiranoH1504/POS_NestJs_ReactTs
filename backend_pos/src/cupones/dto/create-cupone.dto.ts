@@ -5,6 +5,10 @@ export class CreateCuponeDto {
     @IsNotEmpty({message: "El nombre del cupon es obligatorio"})
     nombre: string;
 
+    @IsString({message: "El slug del cupon debe ser una cadena de texto"})
+    @IsNotEmpty({message: "El slug del cupon es obligatorio"})
+    slug: string;
+
     @IsInt({message: "El porcentaje de descuento debe ser un numero entero entre 1 y 99"})
     @Min(1, {message: "El porcentaje minimo es de 1%"})
     @Max(99, {message: "El porcentaje maximo es de 99%"})

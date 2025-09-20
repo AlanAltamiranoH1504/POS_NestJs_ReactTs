@@ -8,6 +8,9 @@ export class Cupone {
     @Column({type: "varchar", length: 50})
     nombre: string;
 
+    @Column({type: "varchar", length: 10})
+    slug: string;
+
     @Column({type: "int"})
     porcentaje: number;
 

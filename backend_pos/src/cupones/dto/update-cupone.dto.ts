@@ -8,6 +8,10 @@ export class UpdateCuponeDto extends PartialType(CreateCuponeDto) {
     @IsNotEmpty({message: "El nombre del cupón es obligatorio"})
     nombre: string;
 
+    @IsString({message: "El slug del cupon debe ser una cadena de texto"})
+    @IsNotEmpty({message: "El slug del cupon es obligatorio"})
+    slug: string;
+
     @IsInt({message: "El porcentaje de descuento debe ser un numero entero"})
     @Min(1, {message: "El porcentaje minimo de descuento es 1%"})
     @Max(99, {message: "El procentaje máximo de descuento es del 99%"})
