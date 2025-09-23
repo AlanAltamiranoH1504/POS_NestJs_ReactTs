@@ -23,7 +23,12 @@ export class CategoriasService {
     }
 
     async findOne(id: number) {
-        const categoriaToShow = await this.categoriaRepository.findOne({where: {id: id}});
+        const categoriaToShow = await this.categoriaRepository.findOne(
+            {
+                where: {id: id},
+                relations: ["productos"]
+            }
+        );
         if (!categoriaToShow) {
             throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND);
         }
