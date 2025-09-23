@@ -1,6 +1,8 @@
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {findCategoriaByIdPOST} from "../services/CategoriaService";
+import ProductCard from "../components/products/ProductCard";
+import type {ProductoDB} from "../types";
 
 const StoreView = () => {
     const params = useParams();
@@ -22,7 +24,11 @@ const StoreView = () => {
 
     if (data) return (
         <>
-            Store View
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {data.productos.map((producto: ProductoDB) => (
+                    <ProductCard key={producto.id} producto={producto}></ProductCard>
+                ))}
+            </div>
         </>
     );
 }
