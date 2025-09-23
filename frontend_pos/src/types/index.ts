@@ -11,3 +11,4 @@ export type CategoriaDB = {
     nombre: string;
     productos: ProductoDB[];
 }
+export type Categoria = Pick<CategoriaDB, "id" | "nombre">

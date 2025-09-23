@@ -12,3 +12,10 @@ export const findByIdResponseAPI = z.object({
         })
     )
 });
+
+export const findAllResponseAPI = z.array(
+    z.object({
+        id: z.number(),
+        nombre: z.string(),
+    })
+);
