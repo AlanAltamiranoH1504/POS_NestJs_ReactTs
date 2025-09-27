@@ -1,8 +1,10 @@
 import {Outlet} from "react-router-dom";
 import MainNav from "../components/MainNav";
 import ShoppingCart from "../components/cart/ShoppingCart";
+import {useCarritoStorage} from "../store/AppStore";
 
 const AppLayout = () => {
+    const {productosOrder} = useCarritoStorage();
     return (
         <>
             <MainNav/>
@@ -11,7 +13,21 @@ const AppLayout = () => {
                     <Outlet/>
                 </div>
                 <aside className="md:w-96 md:h-screen md:overflow-y-scroll pt-10 pb-32 px-5 ">
-                    <ShoppingCart/>
+                    <h2 className="text-4xl font-bold text-gray-900 text-center">Resumen de Venta</h2>
+                    <ul role={"list"}
+                        className="mt-6 divide-y divide-gray-600 border-t border-gray-200 text-sm font-bold">
+                        {productosOrder.length > 0 ? (
+
+                            productosOrder.map((producto) => (
+                                <ShoppingCart
+                                    key={producto.id}
+                                    producto={producto}
+                                />
+                            ))
+                        ) : (
+                            <h2 className="text-center my-5 font-semibold">Carrito vacio</h2>
+                        )}
+                    </ul>
                 </aside>
             </main>
         </>
