@@ -1,10 +1,12 @@
 import type {ProductoDB} from "../../types";
 import {formatoMoneda} from "../../helpers";
+import {useCarritoStorage} from "../../store/AppStore";
 
 type ProductCardProps = {
     producto: ProductoDB
 }
 const ProductCard = ({producto}: ProductCardProps) => {
+    const {addProduct} = useCarritoStorage();
     return (
         <>
             <div className="rounded bg-white shadow relative p-5">
@@ -22,6 +24,9 @@ const ProductCard = ({producto}: ProductCardProps) => {
                 <button
                     type="button"
                     className="absolute top-5 -right-3"
+                    onClick={() => {
+                        addProduct(producto);
+                    }}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                          stroke="currentColor" className="w-8 h-8 bg-indigo-600 rounded-full text-white">
