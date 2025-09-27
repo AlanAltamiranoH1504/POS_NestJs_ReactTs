@@ -6,6 +6,7 @@ type CarritoState = {
     total: number;
     productosOrder: ProductoCarrito[],
     addProduct: (producto: ProductoDB) => void
+    removeProduct: (product: ProductoDB) => void
 }
 
 export const useCarritoStorage = create<CarritoState>()(devtools((set) => ({
@@ -36,6 +37,16 @@ export const useCarritoStorage = create<CarritoState>()(devtools((set) => ({
             return {
                 productosOrder: newProducts
             }
+        });
+    },
+    removeProduct: (producto: ProductoDB) => {
+        set((state) => {
+           const newProducts = state.productosOrder.filter((p) => {
+               return p.id !== producto.id;
+           }) ;
+           return {
+               productosOrder: newProducts
+           }
         });
     }
 })));

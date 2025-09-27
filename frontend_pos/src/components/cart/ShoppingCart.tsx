@@ -1,10 +1,13 @@
 import type {ProductoCarrito} from "../../types";
 import {formatoMoneda} from "../../helpers";
+import {useCarritoStorage} from "../../store/AppStore";
 
 type ShoppingCartProps = {
     producto: ProductoCarrito
 }
 const ShoppingCart = ({producto}: ShoppingCartProps) => {
+    const {removeProduct} = useCarritoStorage();
+    const totalProducto = producto.cantidad * (+producto.precio);
     return (
         <>
             <li className="flex items-center space-x-6 py-6 relative">
@@ -18,7 +21,8 @@ const ShoppingCart = ({producto}: ShoppingCartProps) => {
                     <h3 className="text-gray-900">
                         {producto.nombre}
                     </h3>
-                    <p>{formatoMoneda(+producto.precio)}</p>
+                    <p>{formatoMoneda(+producto.precio)} x unidad</p>
+                    <p>Total: {formatoMoneda(totalProducto)}</p>
                     <select
                         className="w-32 text-center p-2 rounded-lg bg-white"
                         value={producto.cantidad}
@@ -36,6 +40,7 @@ const ShoppingCart = ({producto}: ShoppingCartProps) => {
                     <button
                         type="button"
                         onClick={() => {
+                            removeProduct(producto);
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
