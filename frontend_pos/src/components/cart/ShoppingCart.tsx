@@ -6,7 +6,7 @@ type ShoppingCartProps = {
     producto: ProductoCarrito
 }
 const ShoppingCart = ({producto}: ShoppingCartProps) => {
-    const {removeProduct} = useCarritoStorage();
+    const {removeProduct, updateQuantity} = useCarritoStorage();
     const totalProducto = producto.cantidad * (+producto.precio);
     return (
         <>
@@ -24,9 +24,10 @@ const ShoppingCart = ({producto}: ShoppingCartProps) => {
                     <p>{formatoMoneda(+producto.precio)} x unidad</p>
                     <p>Total: {formatoMoneda(totalProducto)}</p>
                     <select
-                        className="w-32 text-center p-2 rounded-lg bg-white"
+                        className="w-32 text-center p-2 rounded-lg bg-gray-100"
                         value={producto.cantidad}
-                        onChange={() => {
+                        onChange={(e) => {
+                            updateQuantity(producto.id, +e.target.value)
                         }}
                     >
                         {Array.from({length: producto.inventario}, (_, i) => i + 1).map((option) => {

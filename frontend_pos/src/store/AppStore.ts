@@ -1,11 +1,13 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import {create} from "zustand";
+import {devtools} from "zustand/middleware";
 import type {ProductoCarrito, ProductoDB} from "../types";
 
 type CarritoState = {
     total: number;
     productosOrder: ProductoCarrito[],
+
     addProduct: (producto: ProductoDB) => void
+    updateQuantity: (idProduct: ProductoCarrito["id"], quantity: ProductoCarrito["cantidad"]) => void,
     removeProduct: (product: ProductoDB) => void
 }
 
@@ -29,7 +31,8 @@ export const useCarritoStorage = create<CarritoState>()(devtools((set) => ({
             if (productExists) {
                 newProducts = state.productosOrder.map((p) =>
                     p.id === producto.id ? {
-                    ...p, cantidad: p.cantidad + 1, total : +p.total + +producto.precio} : p
+                        ...p, cantidad: p.cantidad + 1, total: +p.total + +producto.precio
+                    } : p
                 );
             } else {
                 newProducts = [...state.productosOrder, productoCarrito];
@@ -39,14 +42,24 @@ export const useCarritoStorage = create<CarritoState>()(devtools((set) => ({
             }
         });
     },
+    updateQuantity: (idProduct, quantity) => {
+        set((state) => {
+            const productosOrden = state.productosOrder.map((p) => p.id === idProduct ?
+                {...p, cantidad: quantity} : p);
+            return {
+                productosOrder: productosOrden
+            }
+        });
+
+    },
     removeProduct: (producto: ProductoDB) => {
         set((state) => {
-           const newProducts = state.productosOrder.filter((p) => {
-               return p.id !== producto.id;
-           }) ;
-           return {
-               productosOrder: newProducts
-           }
+            const newProducts = state.productosOrder.filter((p) => {
+                return p.id !== producto.id;
+            });
+            return {
+                productosOrder: newProducts
+            }
         });
     }
 })));
