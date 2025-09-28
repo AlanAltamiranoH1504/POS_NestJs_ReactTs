@@ -9,7 +9,7 @@ export async function applyCuponPOST(data: FormCupon) {
         if (resultAPI.success) {
             return resultAPI.data;
         }
-        throw new Error(`Error en busqueda de cupón '${data.slug}'`);
+        // throw new Error(`Error en busqueda de cupón '${data.slug}'`);
     } catch (e) {
         // @ts-ignore
         throw new Error(`Error en aplicacion de cupón: ${e.message}`);

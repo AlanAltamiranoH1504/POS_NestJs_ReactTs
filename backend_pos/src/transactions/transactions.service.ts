@@ -46,9 +46,9 @@ export class TransactionsService {
                 descuento = total * (cuponToAply.porcentaje / 100);
             }
 
-            if (total !== createTransactionDto.total) {
-                throw new HttpException("Monto total no correcto", HttpStatus.BAD_REQUEST);
-            }
+            // if (total !== createTransactionDto.total) {
+            //     throw new HttpException("Monto total no correcto", HttpStatus.BAD_REQUEST);
+            // }
 
             const transaccion = new Transaction();
             transaccion.total = total - descuento;

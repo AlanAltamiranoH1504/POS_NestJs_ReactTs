@@ -12,6 +12,7 @@ type CarritoState = {
     updateQuantity: (idProduct: ProductoCarrito["id"], quantity: ProductoCarrito["cantidad"]) => void,
     removeProduct: (product: ProductoDB) => void,
     addCupon: (cupon: CupongDB) => void,
+    deleteOrden: () => void,
 }
 
 export const useCarritoStorage = create<CarritoState>()(devtools((set, get) => ({
@@ -86,7 +87,18 @@ export const useCarritoStorage = create<CarritoState>()(devtools((set, get) => (
             const newTotal = state.total - discountAmount;
             return {
                 total: newTotal,
-                discountAmount
+                discountAmount,
+                cuponApply: cupon
+            }
+        });
+    },
+    deleteOrden: () => {
+        set(() => {
+            return {
+                productosOrder: [],
+                cuponApply: undefined,
+                discountAmount: 0,
+                total: 0
             }
         });
     }

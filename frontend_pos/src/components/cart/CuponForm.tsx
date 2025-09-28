@@ -17,10 +17,13 @@ const CuponForm = () => {
         mutationKey: ["aplyCupon"],
         mutationFn: applyCuponPOST,
         onSuccess: (data) => {
-            toast.success("Cupon encontrado");
-            addCupon(data);
+            if (data) {
+                toast.success("Cupon aplicado!");
+                addCupon(data);
+            }
         },
         onError: (error) => {
+            console.log(error);
             // @ts-ignore
             toast.error(error.response.data.message);
         }
