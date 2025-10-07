@@ -1,14 +1,15 @@
 import type {FormEvent} from "react";
 import {useCarritoStorage} from "../../store/AppStore";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createTransaccionPOST} from "../../services/TransaccionesService";
 import {toast} from "react-toastify";
 
 
 const SubmitOrder = () => {
     const {productosOrder, total, cuponApply, deleteOrden} = useCarritoStorage();
+    const queryClient = useQueryClient();
 
-    function prepareOrder (e: FormEvent<HTMLFormElement>) {
+    function prepareOrder(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const productos = productosOrder.map((producto) => {
             return {
@@ -30,6 +31,12 @@ const SubmitOrder = () => {
         mutationFn: createTransaccionPOST,
         onSuccess: () => {
             toast.success("Pedido realizado correctamente");
+            queryClient.invalidateQueries({
+                queryKey: ["findAllCategorias"]
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["findCategoriaById"]
+            });
             deleteOrden();
         },
         onError: (error) => {
@@ -42,7 +49,7 @@ const SubmitOrder = () => {
         <>
             <form
                 onSubmit={(e) => {
-                    prepareOrder (e)
+                    prepareOrder(e)
                 }}
             >
                 <input type={"submit"}

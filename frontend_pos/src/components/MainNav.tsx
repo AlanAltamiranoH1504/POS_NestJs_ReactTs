@@ -33,6 +33,7 @@ const MainNav = () => {
                               className={"text-white hover:text-green-600 font-bold p-2"}
                         >{category.nombre}</Link>
                     ))}
+                    <Link to="/admin/sales" className="text-white hover:text-green-600 font-bold p-2">Panel de Administracion</Link>
                 </nav>
             </header>
         </>
