@@ -29,7 +29,7 @@ const TransactionSummary = ({sales}: TransactionSummaryProps) => {
                                     <h3 className="text-gray-900">
                                         {item.producto.nombre}
                                     </h3>
-                                    <p className="text-lg font-extrabold  text-gray-900"></p>
+                                    <p className="text-lg font-extrabold  text-gray-900">{formatoMoneda(item.producto.precio)}</p>
                                     <p className="text-lg  text-gray-900">Cantidad: {item.cantidad}</p>
                                 </div>
                             </div>
