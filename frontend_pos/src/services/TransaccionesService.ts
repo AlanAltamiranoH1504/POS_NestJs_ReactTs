@@ -12,3 +12,12 @@ export async function createTransaccionPOST(data: any) {
         throw e;
     }
 }
+
+export async function findAllTransacctionGET(dateTransaction: string) {
+    try {
+        const responseAPI = await ClienteAxios.get(`/transactions?transactionDate=${dateTransaction}`);
+        return responseAPI.data;
+    } catch {
+        throw new Error("Error en busqueda de transacciones desde administracion");
+    }
+}
