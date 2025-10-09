@@ -5,6 +5,7 @@ import AppLayout from "./layouts/AppLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProductosView from "./views/admin/products/AdminProductosView";
 import AdminSalesView from "./views/admin/sales/AdminSalesView";
+import CreateProductView from "./views/admin/products/CreateProductView";
 
 const AppRouter = () => {
     if (window.location.pathname === "/") {
@@ -21,6 +22,7 @@ const AppRouter = () => {
 
                     <Route element={<AdminLayout/>}>
                         <Route path="/admin/products" element={<AdminProductosView/>}></Route>
+                        <Route path="/admin/products/create" element={<CreateProductView/>}></Route>
                         <Route path="/admin/sales" element={<AdminSalesView/>}></Route>
                     </Route>
                 </Routes>

@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {findAllProductsGET} from "../../../services/ProductosService";
 import ProductosTable from "../../../components/admin/products/ProductosTable";
-import {useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import {useEffect} from "react";
 import {ProductosFindAll} from "../../../types";
 import Paginacion from "../../../components/admin/products/Paginacion";
@@ -75,8 +75,17 @@ const AdminProductosView = () => {
     if (data) return (
         <>
             <h2 className="text-2xl my-10">Productos</h2>
-            <p className="text-lg">En esta seccion podras ver los productos y administrarlos</p>
+            <p className="text-lg pb-5">En esta seccion podras ver los productos y administrarlos</p>
 
+            <div className="flex justify-around">
+                <Link
+                    className="rounded bg-green-600 font-bold py-2 px-5 text-white hover:bg-green-700 transition-colors duration-500 my-5"
+                    to="/admin/products/create">Crear Producto</Link>
+
+                <Link
+                    className="rounded bg-indigo-600 font-bold py-2 px-5 text-white hover:bg-indigo-700 transition-colors duration-500 my-5"
+                    to="/admin/categories/create">Crear Categoria</Link>
+            </div>
             <ProductosTable
                 productos={data}
             />

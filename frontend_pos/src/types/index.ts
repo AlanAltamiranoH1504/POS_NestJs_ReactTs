@@ -38,3 +38,9 @@ export type ProductosFindAllInfer = z.infer<typeof responseFindAllProductos>
 export type FormCupon = {
     slug: string;
 }
+export type FormCreateProducto = {
+    nombre: string;
+    precio: number,
+    inventario: number;
+    categoriaId: number;
+}

@@ -16,3 +16,8 @@ export const responseFindAllProductos = z.object({
     ),
     total: z.number(),
 });
+
+export const responseCreateProducto = z.object({
+    status: z.boolean(),
+    message: z.string(),
+});
