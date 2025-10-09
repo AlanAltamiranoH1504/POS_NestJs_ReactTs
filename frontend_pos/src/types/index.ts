@@ -1,5 +1,6 @@
 import z from "zod";
 import {responseAplyCuponAPI} from "../schemas/CuponesScgemas";
+import {responseFindAllProductos} from "../schemas/ProductosSchemas";
 
 export type ProductoDB = {
     id: number;
@@ -25,9 +26,15 @@ export type CategoriaDB = {
     productos: ProductoDB[];
 }
 
-export type CupongDB = z.infer<typeof responseAplyCuponAPI>
 
+export type CupongDB = z.infer<typeof responseAplyCuponAPI>
 export type Categoria = Pick<CategoriaDB, "id" | "nombre">
+export type ProductosFindAll = {
+    categoria_id: number;
+    page: string;
+    take: string;
+}
+export type ProductosFindAllInfer = z.infer<typeof responseFindAllProductos>
 export type FormCupon = {
     slug: string;
 }
