@@ -1,7 +1,9 @@
 import {ProductosFindAllInfer} from "../../../types";
 import {formatoMoneda} from "../../../helpers";
 import {Link, useSearchParams} from "react-router-dom";
-import {useEffect} from "react";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {deleteProductDELETE} from "../../../services/ProductosService";
+import {toast} from "react-toastify";
 
 type ProductoTableProps = {
     productos: ProductosFindAllInfer
@@ -12,10 +14,25 @@ type SearchParams = {
 }
 const ProductosTable = ({productos}: ProductoTableProps) => {
     const products = productos.data;
+    const queryCliente = useQueryClient();
 
     function deleteProductoFunction(id: number) {
-        console.log(`Eliminando producto con id ${id}`);
+        deleteProductoMutation.mutate(id);
     }
+
+    const deleteProductoMutation = useMutation({
+        mutationKey: ["deleteProducto"],
+        mutationFn: deleteProductDELETE,
+        onSuccess: () => {
+            toast.success("Producto eliminado correctamente");
+            queryCliente.invalidateQueries({
+                queryKey: ["findAllProducts"]
+            });
+        },
+        onError: (error) => {
+            toast.error(error.response.data.message);
+        }
+    })
 
     return (
         <>

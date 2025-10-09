@@ -1,6 +1,6 @@
 import {FormCreateProducto, ProductosFindAll} from "../types";
 import {ClienteAxios} from "../axios/ClienteAxios";
-import {responseCreateProducto, responseFindAllProductos} from "../schemas/ProductosSchemas";
+import {responseCreateProducto, responseDeleteProducto, responseFindAllProductos} from "../schemas/ProductosSchemas";
 
 export async function findAllProductsGET(data: ProductosFindAll) {
     try {
@@ -18,6 +18,18 @@ export async function createProductPOST(data: FormCreateProducto) {
     try {
         const responseAPI = await ClienteAxios.post("/productos", data);
         const resultAPI = responseCreateProducto.safeParse(responseAPI.data);
+        if (resultAPI.success) {
+            return resultAPI.data;
+        }
+    } catch (e) {
+        throw e;
+    }
+}
+
+export async function deleteProductDELETE(id: number) {
+    try {
+        const responseAPI = await ClienteAxios.delete(`/productos/${id}`);
+        const resultAPI = responseDeleteProducto.safeParse(responseAPI.data);
         if (resultAPI.success) {
             return resultAPI.data;
         }

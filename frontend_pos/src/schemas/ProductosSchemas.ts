@@ -21,3 +21,7 @@ export const responseCreateProducto = z.object({
     status: z.boolean(),
     message: z.string(),
 });
+export const responseDeleteProducto = z.object({
+    status: z.boolean(),
+    message: z.string(),
+});
