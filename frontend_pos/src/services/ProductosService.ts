@@ -1,6 +1,11 @@
-import {FormCreateProducto, ProductosFindAll} from "../types";
+import {FormCreateProducto, FormUpdateProducto, ProductosFindAll} from "../types";
 import {ClienteAxios} from "../axios/ClienteAxios";
-import {responseCreateProducto, responseDeleteProducto, responseFindAllProductos} from "../schemas/ProductosSchemas";
+import {
+    responseCreateProducto,
+    responseDeleteProducto,
+    responseFindAllProductos,
+    responseFindProducto
+} from "../schemas/ProductosSchemas";
 
 export async function findAllProductsGET(data: ProductosFindAll) {
     try {
@@ -18,6 +23,30 @@ export async function createProductPOST(data: FormCreateProducto) {
     try {
         const responseAPI = await ClienteAxios.post("/productos", data);
         const resultAPI = responseCreateProducto.safeParse(responseAPI.data);
+        if (resultAPI.success) {
+            return resultAPI.data;
+        }
+    } catch (e) {
+        throw e;
+    }
+}
+
+export async function findProductoById(id: number) {
+    try {
+        const responseAPI = await ClienteAxios.get(`/productos/${id}`);
+        const resultAPI = responseFindProducto.safeParse(responseAPI.data);
+        if (resultAPI.success) {
+            return resultAPI.data;
+        }
+    } catch (e) {
+        throw e;
+    }
+}
+
+export async function updateProductoPUT(data: FormUpdateProducto) {
+    try {
+        const responseAPI = await ClienteAxios.patch(`/productos/${data.id}`, data);
+        const resultAPI = responseFindProducto.safeParse(responseAPI.data);
         if (resultAPI.success) {
             return resultAPI.data;
         }

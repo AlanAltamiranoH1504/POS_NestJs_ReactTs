@@ -44,3 +44,10 @@ export type FormCreateProducto = {
     inventario: number;
     categoriaId: number;
 }
+export type FormUpdateProducto = {
+    nombre: string;
+    precio: number;
+    inventario: number;
+    categoriaId: number;
+    id: number;
+}
