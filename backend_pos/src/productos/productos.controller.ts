@@ -28,7 +28,7 @@ export class ProductosController {
 
     @Post()
     @UseInterceptors(FileInterceptor("imagen"))
-    async create(@Body() createProductoDto: CreateProductoDto, @UploadedFile() image: Express.Multer.File) {
+    async create(@Body() createProductoDto: CreateProductoDto, @UploadedFile() image) {
         if (!image) {
             throw new HttpException("Imagen obligatoria", HttpStatus.BAD_REQUEST);
         }
@@ -37,7 +37,7 @@ export class ProductosController {
         return this.productosService.create(createProductoDto, url);
     }
 
-    @Get()
+    @Get()@UseInterceptors(FileInterceptor("imagen"))
     findAll(@Query() query: GetProductosQueryDTO) {
         return this.productosService.findAll(query.categoria_id, query.take, query.page);
     }
@@ -48,8 +48,15 @@ export class ProductosController {
     }
 
     @Patch(':id')
-    update(@Param('id', IdValidationPipe) id: string, @Body() updateProductoDto: UpdateProductoDto) {
-        return this.productosService.update(+id, updateProductoDto);
+    @UseInterceptors(FileInterceptor("imagen"))
+    async update(@Param('id', IdValidationPipe) id: string, @Body() updateProductoDto: UpdateProductoDto, @UploadedFile() image) {
+        let url_cloudinary = "";
+        if (image) {
+            const response_cloudinary = await this.uploadImageService.upload_images(image);
+            const {url} = response_cloudinary;
+            url_cloudinary = url;
+        }
+        return this.productosService.update(+id, updateProductoDto, url_cloudinary);
     }
 
     @Delete(':id')

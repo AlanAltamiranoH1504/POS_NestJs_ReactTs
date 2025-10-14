@@ -4,12 +4,6 @@ type TransactionSummaryProps = {
     sales: any
 }
 const TransactionSummary = ({sales}: TransactionSummaryProps) => {
-    // const totalAmountSales = sales.reduce((acum, item) => {
-    //     return acum += item.total;
-    // });
-    // console.log(totalAmountSales);
-
-    // console.log(sales)
     return (
         <>
             <div className='mt-6  text-sm font-medium text-gray-500 border border-gray-200'>
@@ -23,7 +17,9 @@ const TransactionSummary = ({sales}: TransactionSummaryProps) => {
                             <div className='flex items-center space-x-6 '>
                                 <div className='relative w-32 h-32'>
                                     <img alt={`Imagen de ${item.producto.nombre}`}
-                                         src={`http://localhost:3000/img/${item.producto.imagen}`}/>
+                                         // src={`http://localhost:3000/img/${item.producto.imagen}`}/>
+                                         src={`${item.producto.imagen}`}/>
+
                                 </div>
                                 <div className="flex-auto space-y-1 ">
                                     <h3 className="text-gray-900">

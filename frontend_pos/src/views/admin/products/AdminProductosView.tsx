@@ -3,7 +3,7 @@ import {findAllProductsGET} from "../../../services/ProductosService";
 import ProductosTable from "../../../components/admin/products/ProductosTable";
 import {Link, useSearchParams} from "react-router-dom";
 import {useEffect} from "react";
-import {ProductosFindAll} from "../../../types";
+import type {ProductosFindAll} from "../../../types";
 import Paginacion from "../../../components/admin/products/Paginacion";
 
 const AdminProductosView = () => {

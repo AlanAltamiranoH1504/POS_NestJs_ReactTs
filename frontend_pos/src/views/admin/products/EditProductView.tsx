@@ -1,7 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {findAllCategoriasGET} from "../../../services/CategoriaService";
 import {useForm} from "react-hook-form";
-import {FormUpdateProducto} from "../../../types";
+import type {FormUpdateProducto} from "../../../types";
 import {useParams} from "react-router-dom";
 import {findProductoById, updateProductoPUT} from "../../../services/ProductosService";
 import {useEffect} from "react";
@@ -12,7 +12,7 @@ const EditProductView = () => {
     const params = useParams();
     const id = params.id;
     const queryClient = useQueryClient();
-    const {data, isLoading, isError, error} = useQuery({
+    const {data, isLoading} = useQuery({
         queryKey: ["findAllCategories"],
         queryFn: () => findAllCategoriasGET(),
         retry: false,
@@ -21,15 +21,22 @@ const EditProductView = () => {
 
     const {data: product} = useQuery({
         queryKey: ["findProductById"],
-        queryFn: () => findProductoById(+id),
+        queryFn: () => findProductoById(+id!),
         retry: false,
         refetchOnWindowFocus: false
     });
 
     function updateProductoFunction(data: FormUpdateProducto) {
-        data.id = +id;
-        data.precio = +data.precio;
-        updateProductMutation.mutate(data);
+        data.id = +id!;
+        const productoPorCrear = new FormData();
+        productoPorCrear.append("nombre", data.nombre);
+        productoPorCrear.append("precio", data.precio);
+        // @ts-ignore
+        productoPorCrear.append("imagen", data.imagen[0]);
+        productoPorCrear.append("inventario", data.inventario);
+        productoPorCrear.append("categoriaId", data.categoriaId);
+        productoPorCrear.append("id", String(data.id));
+        updateProductMutation.mutate(productoPorCrear);
     }
 
     const updateProductMutation = useMutation({
@@ -42,6 +49,7 @@ const EditProductView = () => {
             })
         },
         onError: (error) => {
+            // @ts-ignore
             toast.error(error.response.data.message);
         }
     })
@@ -51,18 +59,14 @@ const EditProductView = () => {
             reset({
                 precio: product.precio,
                 nombre: product.nombre,
-                inventario: product.inventario,
-                categoriaId: product.categoria.id
+                inventario: String(product.inventario),
+                categoriaId: String(product.categoria.id)
             })
         }
     }, [product]);
 
     if (isLoading) {
         return <div>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div>{errors}</div>;
     }
 
 
@@ -160,6 +164,22 @@ const EditProductView = () => {
                     </select>
                     <div className="bg-red-100 text-red-600 text-center font-semibold rounded-sm">
                         {errors.categoriaId && String(errors.categoriaId.message)}
+                    </div>
+                </div>
+
+                <div className="space-y-2 ">
+                    <label
+                        htmlFor="categoryId"
+                        className="block font-semibold"
+                    >Imagen</label>
+
+                    <input type="file" className="border border-gray-300 w-full p-2 bg-white rounded-lg"
+                           accept={"image/*"}
+                           {...register("imagen")}
+                    />
+
+                    <div className="bg-red-100 text-red-600 text-center font-semibold rounded-sm">
+                        {errors.imagen && String(errors.imagen.message)}
                     </div>
                 </div>
 

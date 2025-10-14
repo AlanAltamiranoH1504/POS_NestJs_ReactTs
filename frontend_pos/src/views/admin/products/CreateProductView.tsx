@@ -1,5 +1,5 @@
 import {useForm} from "react-hook-form";
-import {FormCreateProducto} from "../../../types";
+import type {FormCreateProducto} from "../../../types";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {findAllCategoriasGET} from "../../../services/CategoriaService";
 import {createProductPOST} from "../../../services/ProductosService";
@@ -9,14 +9,15 @@ const CreateProductView = () => {
     const {register, handleSubmit, formState: {errors}} = useForm<FormCreateProducto>();
 
     function createProductoFunction(data: FormCreateProducto) {
-        // console.log(data)
-        const producto: FormCreateProducto = {
-            nombre: data.nombre,
-            precio: +data.precio,
-            inventario: +data.inventario,
-            categoriaId: +data.categoriaId
-        }
-        createProductMutation.mutate(producto);
+        const productoPorCrear = new FormData();
+        productoPorCrear.append("nombre", data.nombre);
+        productoPorCrear.append("precio", data.precio);
+        // @ts-ignore
+        productoPorCrear.append("imagen", data.imagen[0]);
+        productoPorCrear.append("inventario", data.inventario);
+        productoPorCrear.append("categoriaId", data.categoriaId);
+        console.log(productoPorCrear)
+        createProductMutation.mutate(productoPorCrear);
     }
 
     const {data, isLoading, isError, error} = useQuery({
@@ -33,6 +34,7 @@ const CreateProductView = () => {
             toast.success("Producto creado correctamente");
         },
         onError: (error) => {
+            // @ts-ignore
             toast.error(error.response.data.message);
         }
     })
@@ -132,12 +134,30 @@ const CreateProductView = () => {
                         })}
                     >
                         <option value="">Seleccionar Categoría</option>
-                        {data.map((categoria) => (
+                        {data?.map((categoria) => (
                             <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>
                         ))}
                     </select>
                     <div className="bg-red-100 text-red-600 text-center font-semibold rounded-sm">
                         {errors.categoriaId && String(errors.categoriaId.message)}
+                    </div>
+                </div>
+
+                <div className="space-y-2 ">
+                    <label
+                        htmlFor="categoryId"
+                        className="block font-semibold"
+                    >Imagen</label>
+
+                    <input type="file" className="border border-gray-300 w-full p-2 bg-white rounded-lg"
+                        accept={"image/*"}
+                           {...register("imagen", {
+                               required: "La imagen es obligatoria"
+                           })}
+                    />
+
+                    <div className="bg-red-100 text-red-600 text-center font-semibold rounded-sm">
+                        {errors.imagen && String(errors.imagen.message)}
                     </div>
                 </div>
 

@@ -8,14 +8,14 @@ export class UpdateProductoDto extends PartialType(CreateProductoDto) {
     nombre: string;
 
     @IsNotEmpty({message: "El precio del producto es obligatorio"})
-    @IsNumber({maxDecimalPlaces: 2}, {message: "El precio del producto debe tener maximo 2 decimales"})
+    @IsString({message: "El precio del producto debe tener maximo 2 decimales"})
     precio: string;
 
-    @IsInt({message: "El invetario del producto debe ser un numero entero"})
+    @IsString({message: "El invetario del producto debe ser un numero entero"})
     @IsNotEmpty({message: "El inventario del producto es obligatorio"})
     inventario: string;
 
-    @IsInt({message: "La categoria no es valida"})
+    @IsString({message: "La categoria no es valida"})
     @IsNotEmpty({message: "La categoria es obligatoria"})
     categoriaId: string;
 }

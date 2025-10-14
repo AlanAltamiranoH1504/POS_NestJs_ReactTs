@@ -1,7 +1,7 @@
-import {ProductosFindAllInfer} from "../../../types";
+import type {ProductosFindAllInfer} from "../../../types";
 import {formatoMoneda} from "../../../helpers";
-import {Link, useSearchParams} from "react-router-dom";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {Link, } from "react-router-dom";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {deleteProductDELETE} from "../../../services/ProductosService";
 import {toast} from "react-toastify";
 
@@ -9,9 +9,6 @@ type ProductoTableProps = {
     productos: ProductosFindAllInfer
 }
 
-type SearchParams = {
-    pagina: string
-}
 const ProductosTable = ({productos}: ProductoTableProps) => {
     const products = productos.data;
     const queryCliente = useQueryClient();
@@ -71,14 +68,15 @@ const ProductosTable = ({productos}: ProductoTableProps) => {
                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                             <img alt={`Imagen de producto ${product.nombre}`}
                                                  className="max-h-32"
-                                                 src={`http://localhost:3000/img/${product.imagen}`}
+                                                 // src={`http://localhost:3000/img/${product.imagen}`}
+                                                src={product.imagen}
                                             />
                                         </td>
                                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                                             {product.nombre}
                                         </td>
                                         <td className="px-3 py-4 text-sm text-gray-500">
-                                            {formatoMoneda(product.precio)}
+                                            {formatoMoneda(+product.precio)}
                                         </td>
                                         <td className="px-3 py-4 text-sm text-gray-500">
                                             {product.inventario}

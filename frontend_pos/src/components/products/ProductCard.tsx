@@ -12,7 +12,8 @@ const ProductCard = ({producto}: ProductCardProps) => {
             <div className="rounded bg-white shadow relative p-5">
                 <div>
                     <img
-                        src={`http://localhost:3000/img/${producto.imagen}`}
+                        // http://localhost:3000/img/
+                        src={`${producto.imagen}`}
                         alt={`Imagen de producto ${producto.nombre}`}
                     />
                     <div className="p-3 space-y-2">

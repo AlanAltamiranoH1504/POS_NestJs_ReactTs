@@ -59,7 +59,7 @@ export class ProductosService {
         return producto;
     }
 
-    async update(id: number, updateProductoDto: UpdateProductoDto) {
+    async update(id: number, updateProductoDto: UpdateProductoDto, url_cloudinary: string) {
         const productoToUpdate = await this.findOne(id);
         const categoriaToSet = await this.categoriaRepository.findOne({where: {id: +updateProductoDto.categoriaId}});
         if (!categoriaToSet) {
@@ -69,6 +69,7 @@ export class ProductosService {
         productoToUpdate.nombre = updateProductoDto.nombre;
         productoToUpdate.precio = +updateProductoDto.precio;
         productoToUpdate.inventario = +updateProductoDto.inventario;
+        productoToUpdate.imagen = url_cloudinary ? url_cloudinary : productoToUpdate.imagen;
         productoToUpdate.categoria = categoriaToSet;
         await this.productoRepository.save(productoToUpdate);
         return productoToUpdate;

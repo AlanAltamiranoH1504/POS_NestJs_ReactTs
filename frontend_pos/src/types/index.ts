@@ -40,14 +40,16 @@ export type FormCupon = {
 }
 export type FormCreateProducto = {
     nombre: string;
-    precio: number,
-    inventario: number;
-    categoriaId: number;
+    precio: string,
+    inventario: string;
+    categoriaId: string;
+    imagen: File
 }
 export type FormUpdateProducto = {
     nombre: string;
-    precio: number;
-    inventario: number;
-    categoriaId: number;
+    precio: string;
+    inventario: string;
+    categoriaId: string;
     id: number;
+    imagen: File
 }

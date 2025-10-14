@@ -1,4 +1,4 @@
-import {FormCreateProducto, FormUpdateProducto, ProductosFindAll} from "../types";
+import type {ProductosFindAll} from "../types";
 import {ClienteAxios} from "../axios/ClienteAxios";
 import {
     responseCreateProducto,
@@ -19,7 +19,7 @@ export async function findAllProductsGET(data: ProductosFindAll) {
     }
 }
 
-export async function createProductPOST(data: FormCreateProducto) {
+export async function createProductPOST(data: any) {
     try {
         const responseAPI = await ClienteAxios.post("/productos", data);
         const resultAPI = responseCreateProducto.safeParse(responseAPI.data);
@@ -43,9 +43,9 @@ export async function findProductoById(id: number) {
     }
 }
 
-export async function updateProductoPUT(data: FormUpdateProducto) {
+export async function updateProductoPUT(data: any) {
     try {
-        const responseAPI = await ClienteAxios.patch(`/productos/${data.id}`, data);
+        const responseAPI = await ClienteAxios.patch(`/productos/${data.get("id")}`, data);
         const resultAPI = responseFindProducto.safeParse(responseAPI.data);
         if (resultAPI.success) {
             return resultAPI.data;

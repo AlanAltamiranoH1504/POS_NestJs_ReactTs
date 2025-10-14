@@ -13,7 +13,7 @@ const ShoppingCart = ({producto}: ShoppingCartProps) => {
             <li className="flex items-center space-x-6 py-6 relative">
                 <div className='h-24 w-24'>
                     <img
-                        src={`http://localhost:3000/img/${producto.imagen}`}
+                        src={`${producto.imagen}`}
                         alt={`Imagen de ${producto.nombre}`}
                     />
                 </div>
