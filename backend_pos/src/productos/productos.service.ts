@@ -6,26 +6,28 @@ import {Producto} from "./entities/producto.entity";
 import {Repository} from "typeorm";
 import {Categoria} from "../categorias/entities/categoria.entity";
 import {take} from "rxjs";
+import {UploadImagesService} from "../upload_images/upload_images.service";
 
 @Injectable()
 export class ProductosService {
     constructor(
         @InjectRepository(Producto) private readonly productoRepository: Repository<Producto>,
-        @InjectRepository(Categoria) private readonly categoriaRepository: Repository<Categoria>) {
-    }
+        @InjectRepository(Categoria) private readonly categoriaRepository: Repository<Categoria>,
+        private readonly uploadImagenService: UploadImagesService
+    ) {}
 
-    async create(createProductoDto: CreateProductoDto) {
+    async create(createProductoDto: CreateProductoDto, url_imagen: string) {
         //Busqueda de categoria por id
-        const categoriaToShow = await this.categoriaRepository.findOneBy({id: createProductoDto.categoriaId});
+        const categoriaToShow = await this.categoriaRepository.findOneBy({id: +createProductoDto.categoriaId});
         if (!categoriaToShow) {
             throw new HttpException("Categoria no valida", HttpStatus.NOT_FOUND);
         }
-
         const productoToSave = new Producto();
         productoToSave.nombre = createProductoDto.nombre;
-        productoToSave.precio = createProductoDto.precio;
-        productoToSave.inventario = createProductoDto.inventario;
+        productoToSave.precio = +createProductoDto.precio;
+        productoToSave.inventario = +createProductoDto.inventario;
         productoToSave.categoria = categoriaToShow;
+        productoToSave.imagen = url_imagen;
 
         return this.productoRepository.save(productoToSave);
     }
@@ -59,14 +61,14 @@ export class ProductosService {
 
     async update(id: number, updateProductoDto: UpdateProductoDto) {
         const productoToUpdate = await this.findOne(id);
-        const categoriaToSet = await this.categoriaRepository.findOne({where: {id: updateProductoDto.categoriaId}});
+        const categoriaToSet = await this.categoriaRepository.findOne({where: {id: +updateProductoDto.categoriaId}});
         if (!categoriaToSet) {
             throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND);
         }
 
         productoToUpdate.nombre = updateProductoDto.nombre;
-        productoToUpdate.precio = updateProductoDto.precio;
-        productoToUpdate.inventario = updateProductoDto.inventario;
+        productoToUpdate.precio = +updateProductoDto.precio;
+        productoToUpdate.inventario = +updateProductoDto.inventario;
         productoToUpdate.categoria = categoriaToSet;
         await this.productoRepository.save(productoToUpdate);
         return productoToUpdate;

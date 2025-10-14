@@ -27,8 +27,14 @@ export class ProductosController {
     ) {}
 
     @Post()
-    create(@Body() createProductoDto: CreateProductoDto) {
-        return this.productosService.create(createProductoDto);
+    @UseInterceptors(FileInterceptor("imagen"))
+    async create(@Body() createProductoDto: CreateProductoDto, @UploadedFile() image: Express.Multer.File) {
+        if (!image) {
+            throw new HttpException("Imagen obligatoria", HttpStatus.BAD_REQUEST);
+        }
+        const response_cloudinary = await this.uploadImageService.upload_images(image);
+        const {url} = response_cloudinary;
+        return this.productosService.create(createProductoDto, url);
     }
 
     @Get()
