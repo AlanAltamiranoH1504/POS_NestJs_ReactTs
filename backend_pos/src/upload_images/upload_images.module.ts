@@ -3,6 +3,7 @@ import { UploadImagesService } from './upload_images.service';
 import { upload_images_provider } from './upload_images';
 
 @Module({
-  providers: [UploadImagesService, upload_images_provider]
+  providers: [UploadImagesService, upload_images_provider],
+  exports: [UploadImagesService, upload_images_provider]
 })
 export class UploadImagesModule {}
